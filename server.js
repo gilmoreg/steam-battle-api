@@ -56,7 +56,7 @@ app.get('/owned/:id', (req,res) => {
     const url = `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${STEAM_API_KEY}&steamid=${id}&format=json`;
     axios.get(url)
         .then(response => {
-            res.status(200).json( {"players": response.data.response.games} );
+            res.status(200).json( {"games": response.data.response.games} );
         })
         .catch(err => {
             console.log(err);
