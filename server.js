@@ -47,7 +47,6 @@ app.get('/owned/:id', (req,res) => {
     const url = `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${STEAM_API_KEY}&steamid=${id}&format=json`;
     axios.get(url)
         .then(response => {
-            console.log(response.data);
             res.status(200).json( {"players": response.data.response.games} );
         })
         .catch(err => {
@@ -64,7 +63,6 @@ app.get('/gameachievements/:id', (req,res) => {
     const url = `http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${id}&format=json`;
     axios.get(url)
         .then(response => {
-            console.log(response.data.achievementpercentages.achievements);
             res.status(200).json( {"achievements": response.data.achievementpercentages.achievements} );
         })
         .catch(err => {
@@ -73,11 +71,21 @@ app.get('/gameachievements/:id', (req,res) => {
         });
 });
 
+app.get('/playerachievements/:id/:game', (req,res) => {
+    if(!req.params.id || !req.params.game) {
+        res.status(500).send('Request must include 64bit Steam Player ID and Steam Game ID');
+    }
+    const id = req.params.id;
+    const game = req.params.game;
+    const url = `http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${game}&key=${STEAM_API_KEY}&steamid=${id}`;
+    axios.get(url)
+        .then(response => {
+            res.status(200).json( {"achievements": response.data.playerstats.achievements} );
+        })
+        .catch(err => {
+            console.log(err);
+            res.json( {'/playerachievements/:id/:game': err } );
+        });
+});
+
 app.listen(process.env.PORT || 9000);
-
-/*
-
-achievements
-achievementPercents
-
-*/
