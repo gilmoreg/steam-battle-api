@@ -31,7 +31,16 @@ app.get('/players/:id1/:id2', (req,res) => {
     const url = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${STEAM_API_KEY}&steamids=${id1},${id2}`;
     axios.get(url)
         .then(response=>{
-            res.status(200).json( {"players": response.data.response.players} );
+            const players = response.data.response.players
+                .map( p => {
+                    return {
+                        'steamid':p.steamid,
+                        'personaname':p.personaname,
+                        'profileurl':p.profileurl,
+                        'avatarfull':p.avatarfull
+                    }
+                })
+            res.status(200).json( {"players": players } );
         })
         .catch(err=>{
             console.log(err);
@@ -82,7 +91,7 @@ app.get('/playerachievements/:id/:game', (req,res) => {
         .then(response => {
             const achievements = response.data.playerstats.achievements
                 .filter( a => { return a.achieved })
-                .map(a => { return a.apiname } )
+                .map(a => { return a.apiname });
             res.status(200).json( {"achievements": achievements} );
         })
         .catch(err => {
