@@ -1,0 +1,24 @@
+{
+  "name": "steam-battle-api",
+  "version": "1.0.0",
+  "description": "RESTful API for Steam Battle",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gilmoreg/steam-battle-api.git"
+  },
+  "author": "Grayson Gilmore",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gilmoreg/steam-battle-api/issues"
+  },
+  "homepage": "https://github.com/gilmoreg/steam-battle-api#readme",
+  "dependencies": {
+    "cors": "^2.8.1",
+    "express": "^5.0.0-alpha.4"
+  }
+}
