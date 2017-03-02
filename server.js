@@ -56,11 +56,27 @@ app.get('/owned/:id', (req,res) => {
         });
 });
 
+app.get('/gameachievements/:id', (req,res) => {
+    if(!req.params.id) {
+        res.status(500).send('Request must include Steam Game ID');
+    }
+    const id = req.params.id;
+    const url = `http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${id}&format=json`;
+    axios.get(url)
+        .then(response => {
+            console.log(response.data.achievementpercentages.achievements);
+            res.status(200).json( {"achievements": response.data.achievementpercentages.achievements} );
+        })
+        .catch(err => {
+            console.log(err);
+            res.json( {'/gameachievements/:id error': err } );
+        });
+});
+
 app.listen(process.env.PORT || 9000);
 
 /*
 
-ownedGames
 achievements
 achievementPercents
 
