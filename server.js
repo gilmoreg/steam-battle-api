@@ -104,7 +104,7 @@ app.get('/playerachievements/:id/:game', (req,res,next) => {
             res.status(200).json( {"achievements": achievements.length } );
         })
         .catch(err => {
-            res.status(204).json( JSON.stringify(err.response.data) );
+            res.status(204).json( {'/playerachievements/:id/:game': err } );
         })
         .catch(next);
 });
