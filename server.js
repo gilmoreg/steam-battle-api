@@ -23,7 +23,7 @@ app.get('/vanity/:url', (req,res,next) => {
         })
         .catch(err=>{
             console.log(err);
-            res.json( {'/vanity/:url error': err } );
+            res.status(204).json( {'/vanity/:url error': err } );
         })
         .catch(next);
 });
@@ -49,7 +49,7 @@ app.get('/player/:id', (req,res,next) => {
         })
         .catch(err=>{
             console.log(err);
-            res.json( {'/players/:id1/:id2 error': err } );
+            res.status(204).json( {'/players/:id1/:id2 error': err } );
         })
         .catch(next);
 });
@@ -66,7 +66,7 @@ app.get('/owned/:id', (req,res,next) => {
         })
         .catch(err => {
             console.log(err);
-            res.json( {'/owned/:id error': err } );
+            res.status(204).json( {'/owned/:id error': err } );
         })
         .catch(next);
 });
@@ -83,7 +83,7 @@ app.get('/gameachievements/:id', (req,res,next) => {
         })
         .catch(err => {
             console.log(err);
-            res.json( {'/gameachievements/:id error': err } );
+            res.status(204).json( {'/gameachievements/:id error': err } );
         })
         .catch(next);
 });
@@ -104,7 +104,7 @@ app.get('/playerachievements/:id/:game', (req,res,next) => {
             res.status(200).json( {"achievements": achievements.length } );
         })
         .catch(err => {
-            res.json( JSON.stringify(err.response.data) );
+            res.status(204).json( JSON.stringify(err.response.data) );
         })
         .catch(next);
 });
