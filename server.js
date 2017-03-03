@@ -6,7 +6,12 @@ let app = express();
 app.use(cors());
 const STEAM_API_KEY = process.env.STEAM_API_KEY;
 
-app.get('/vanity/:url', (req,res) => {
+// Since heroku sleeps, this can be called to try and "wake" the server
+app.get('/', (req,res) => {
+    res.status(200);
+});
+
+app.get('/vanity/:url', (req,res,next) => {
     if(!req.params.url) {
         res.status(500).send('Request must include Steam community name');
     }
@@ -19,10 +24,11 @@ app.get('/vanity/:url', (req,res) => {
         .catch(err=>{
             console.log(err);
             res.json( {'/vanity/:url error': err } );
-        });
+        })
+        .catch(next);
 });
 
-app.get('/players/:id1/:id2', (req,res) => {
+app.get('/players/:id1/:id2', (req,res,next) => {
     if(!req.params.id1 || !req.params.id2) {
         res.status(500).send('Request must include 64bit Steam IDs of two players');
     }
@@ -45,10 +51,11 @@ app.get('/players/:id1/:id2', (req,res) => {
         .catch(err=>{
             console.log(err);
             res.json( {'/players/:id1/:id2 error': err } );
-        });
+        })
+        .catch(next);
 });
 
-app.get('/owned/:id', (req,res) => {
+app.get('/owned/:id', (req,res,next) => {
     if(!req.params.id) {
         res.status(500).send('Request must include 64bit Steam ID');
     }
@@ -61,10 +68,11 @@ app.get('/owned/:id', (req,res) => {
         .catch(err => {
             console.log(err);
             res.json( {'/owned/:id error': err } );
-        });
+        })
+        .catch(next);
 });
 
-app.get('/gameachievements/:id', (req,res) => {
+app.get('/gameachievements/:id', (req,res,next) => {
     if(!req.params.id) {
         res.status(500).send('Request must include Steam Game ID');
     }
@@ -77,10 +85,11 @@ app.get('/gameachievements/:id', (req,res) => {
         .catch(err => {
             console.log(err);
             res.json( {'/gameachievements/:id error': err } );
-        });
+        })
+        .catch(next);
 });
 
-app.get('/playerachievements/:id/:game', (req,res) => {
+app.get('/playerachievements/:id/:game', (req,res,next) => {
     if(!req.params.id || !req.params.game) {
         res.status(500).send('Request must include 64bit Steam Player ID and Steam Game ID');
     }
@@ -89,15 +98,16 @@ app.get('/playerachievements/:id/:game', (req,res) => {
     const url = `http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${game}&key=${STEAM_API_KEY}&steamid=${id}`;
     axios.get(url)
         .then(response => {
+            console.log(response);
             const achievements = response.data.playerstats.achievements
                 .filter( a => { return a.achieved })
                 .map(a => { return a.apiname });
             res.status(200).json( {"achievements": achievements} );
         })
         .catch(err => {
-            console.log(err);
-            res.json( {'/playerachievements/:id/:game': err } );
-        });
+            res.json( JSON.stringify(err.response.data) );
+        })
+        .catch(next);
 });
 
 app.listen(process.env.PORT || 9000);
