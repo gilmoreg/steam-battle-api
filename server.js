@@ -101,7 +101,8 @@ app.get('/playerachievements/:id/:game', (req,res,next) => {
             const achievements = response.data.playerstats.achievements
                 .filter( a => { return a.achieved })
                 .map(a => { return a.apiname });
-            res.status(200).json( {"achievements": achievements} );
+            //res.status(200).json( {"achievements": achievements} );
+            res.status(200).json( {"achievements": achievements.length } );
         })
         .catch(err => {
             res.json( JSON.stringify(err.response.data) );
