@@ -97,7 +97,6 @@ app.get('/playerachievements/:id/:game', (req,res,next) => {
     const url = `http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${game}&key=${STEAM_API_KEY}&steamid=${id}`;
     axios.get(url)
         .then(response => {
-            console.log(response);
             const achievements = response.data.playerstats.achievements
                 .filter( a => { return a.achieved })
                 .map(a => { return a.apiname });
