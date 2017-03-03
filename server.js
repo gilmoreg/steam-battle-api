@@ -28,16 +28,15 @@ app.get('/vanity/:url', (req,res,next) => {
         .catch(next);
 });
 
-app.get('/players/:id1/:id2', (req,res,next) => {
-    if(!req.params.id1 || !req.params.id2) {
-        res.status(500).send('Request must include 64bit Steam IDs of two players');
+app.get('/player/:id', (req,res,next) => {
+    if(!req.params.id) {
+        res.status(500).send('Request must include 64bit Steam ID');
     }
-    const id1 = req.params.id1;
-    const id2 = req.params.id2;
-    const url = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${STEAM_API_KEY}&steamids=${id1},${id2}`;
+    const id = req.params.id;
+    const url = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${STEAM_API_KEY}&steamids=${id}`;
     axios.get(url)
         .then(response=>{
-            const players = response.data.response.players
+            const player = response.data.response.players
                 .map( p => {
                     return {
                         'steamid':p.steamid,
@@ -46,7 +45,7 @@ app.get('/players/:id1/:id2', (req,res,next) => {
                         'avatarfull':p.avatarfull
                     }
                 })
-            res.status(200).json( {"players": players } );
+            res.status(200).json( {"player": player } );
         })
         .catch(err=>{
             console.log(err);
