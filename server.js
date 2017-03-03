@@ -97,14 +97,32 @@ app.get('/playerachievements/:id/:game', (req,res,next) => {
     const url = `http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${game}&key=${STEAM_API_KEY}&steamid=${id}`;
     axios.get(url)
         .then(response => {
-            const achievements = response.data.playerstats.achievements
-                .filter( a => { return a.achieved })
-                .map(a => { return a.apiname });
-            //res.status(200).json( {"achievements": achievements} );
-            res.status(200).json( {"achievements": achievements.length } );
+            if(response && 
+                response.data && 
+                response.data.playerstats && 
+                response.data.playerstats.achievements
+            ) {
+                const achievements = response.data.playerstats.achievements
+                    .filter( a => { return a.achieved })
+                    .map(a => { return a.apiname });
+                res.status(200).json( {"achievements": achievements.length } );
+            }
+            else {
+                res.status(200).json( {"achievements": 0 } );
+            }
         })
         .catch(err => {
-            res.status(204).json( {'/playerachievements/:id/:game': err } );
+            if(err.response) {
+                res.status(200).json( {"achievements": 0 } );
+            }
+            else {
+                console.log('/playerachievements/:id/:game ERROR', {
+                    data: err,
+                    id: id, 
+                    game: game
+                });
+                res.status(204).json( { err:'/playerachievements/:id/:game' } );
+            }
         })
         .catch(next);
 });
