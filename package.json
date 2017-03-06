@@ -4,7 +4,7 @@
   "description": "RESTful API for Steam Battle",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --inline-diffs ./test",
     "start": "node server.js"
   },
   "repository": {
@@ -21,7 +21,20 @@
     "axios": "^0.15.3",
     "cors": "^2.8.1",
     "dotenv": "^4.0.0",
-    "express": "^5.0.0-alpha.4"
+    "express": "^4.15.0",
+    "morgan": "^1.8.1",
+    "steamid": "^1.1.0",
+    "winston": "^2.3.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "chai-http": "^3.0.0",
+    "eslint": "^3.17.0",
+    "eslint-config-airbnb-base": "^11.1.1",
+    "eslint-plugin-import": "^2.2.0",
+    "mocha": "^3.2.0",
+    "morgan": "^1.8.1",
+    "winston": "^2.3.1"
+  }
 }

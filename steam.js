@@ -1,0 +1,136 @@
+const axios = require('axios');
+const SteamID = require('steamid');
+
+require('dotenv').config();
+
+const STEAM_API_KEY = process.env.STEAM_API_KEY;
+
+const getIdFromVanity = vanity =>
+  new Promise((resolve, reject) => {
+    const url = `http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${STEAM_API_KEY}&vanityurl=${vanity}`;
+    axios.get(url)
+      .then((response) => {
+        if (response.data && response.data.steamid) resolve(response.data.steamid);
+        reject('Invalid Steam ID');
+      })
+      .catch((err) => {
+        reject(`Invalid Steam ID. ${err}`);
+      });
+  });
+
+
+const getSteamID = id =>
+  new Promise((resolve, reject) => {
+    try {
+      const sid = new SteamID(id);
+      resolve(sid.getSteamID64());
+    } catch (error) {
+      // If SteamID threw an error, this might be a vanity URL
+      getIdFromVanity(id)
+        .then(sid => resolve(sid))
+        .catch(err => reject(`getSteamID ${error} ${err}`));
+    }
+  });
+
+
+const getOwnedGames = id =>
+  new Promise((resolve, reject) => {
+    const url = `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${STEAM_API_KEY}&steamid=${id}&format=json`;
+    axios(url)
+      .then((response) => {
+        if (response &&
+            response.data &&
+            response.data.response &&
+            response.data.response.games) resolve(response.data.response.games);
+        else reject('getOwnedGames: Invalid response from API');
+      })
+      .catch((err) => { reject(`getOwnedGames error: ${err}`); });
+  });
+
+const getPlayerProfile = id =>
+  new Promise((resolve, reject) => {
+    const url = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${STEAM_API_KEY}&steamids=${id}`;
+    axios(url).then((response) => {
+      if (response &&
+          response.data &&
+          response.data.response &&
+          response.data.response.players) {
+        const p = response.data.response.players[0];
+        const player = {
+          steamid: p.steamid,
+          personaname: p.personaname,
+          profileurl: p.profileurl,
+          avatarfull: p.avatarfull,
+        };
+        resolve(player);
+      } else reject('getPlayerProfile: Invalid response from API');
+    })
+    .catch((error) => { reject(`getPlayerProfile error: ${error}`); });
+  });
+
+const score = player =>
+  // Formula:
+  // 1 point per game owned
+  // 1 point per hour played - counts double if played in the last two weeks
+  player.owned + Number.parseInt(player.playtime / 60, 10) +
+    Number.parseInt(player.recent / 60, 10);
+
+const calculateScore = (id) => {
+  const player = {
+    id,
+    owned: 0,
+    playtime: 0,
+    recent: 0,
+    total: 0,
+  };
+  return new Promise((resolve, reject) => {
+    getOwnedGames(id)
+        .then((games) => {
+          // First score: # of games owned (will count games bought but not played)
+          if (!games) reject(`no games returned for ${id}`);
+          player.owned = games.length;
+          games.forEach((game) => {
+            // Add game time to player if they've actually played it
+            if (game.playtime_forever) {
+              // Second score: # of minutes played
+              player.playtime += game.playtime_forever;
+              // Third score: # of minutes played in last two weeks
+              if (game.playtime_2weeks) player.recent += game.playtime_2weeks;
+            }
+          });
+          player.total = score(player);
+          resolve(player);
+        })
+        .catch(err => reject(`calculateScore error: ${err}`));
+  });
+};
+
+module.exports = {
+  checkid: id =>
+    new Promise((resolve, reject) => {
+      getSteamID(id).then((sid) => {
+        getOwnedGames(sid).then((games) => {
+          if (games) resolve(sid);
+          reject(null);
+        })
+        .catch(err => reject(err));
+      })
+      .catch(err => reject(err));
+    }),
+  profile: id =>
+    new Promise((resolve, reject) => {
+      getPlayerProfile(id)
+        .then((profile) => {
+          console.log('getPlayerProfile', profile);
+          resolve(profile);
+        })
+        .catch(err => reject(err));
+    }),
+  score: id =>
+    new Promise((resolve, reject) => {
+      calculateScore(id)
+        .then(sc => resolve(sc))
+        .catch(err => reject(err));
+    }),
+};
+
