@@ -89,3 +89,31 @@ describe('GET /score/:id', () => {
       })
   );
 });
+
+describe('GET /player/:id', () => {
+  before(() => runServer());
+  after(() => closeServer());
+
+  it('should return valid player object for a known good id', () =>
+    chai.request(app)
+      .get('/player/76561198007908897')
+      .then((res) => {
+        res.should.have.status(200);
+        res.body.player.should.exist;
+        res.body.player.profile.should.exist;
+        res.body.player.profile.steamid.should.equal('76561198007908897');
+        res.body.player.score.should.exist;
+        res.body.player.score.steamid.should.equal('76561198007908897');
+      })
+  );
+
+  it('should return status 500 for known bad id', () =>
+    chai.request(app)
+      .get('/player/aaaa')
+      .then(() => {
+      })
+      .catch((res) => {
+        res.should.have.status(500);
+      })
+  );
+});

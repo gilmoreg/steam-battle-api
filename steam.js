@@ -80,7 +80,7 @@ const score = player =>
 
 const calculateScore = (id) => {
   const player = {
-    id,
+    steamid: id,
     owned: 0,
     playtime: 0,
     recent: 0,
@@ -130,6 +130,14 @@ module.exports = {
     new Promise((resolve, reject) => {
       calculateScore(id)
         .then(sc => resolve(sc))
+        .catch(err => reject(err));
+    }),
+  player: id =>
+    new Promise((resolve, reject) => {
+      Promise.all([getPlayerProfile(id), calculateScore(id)])
+        .then((player) => {
+          resolve({ profile: player[0], score: player[1] });
+        })
         .catch(err => reject(err));
     }),
 };

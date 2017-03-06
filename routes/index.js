@@ -24,4 +24,11 @@ router.get('/score/:id', (req, res, next) => {
     .catch(next);
 });
 
+router.get('/player/:id', (req, res, next) => {
+  Steam.player(req.params.id)
+    .then(player => res.status(200).json({ player }))
+    .catch(err => res.status(500).json({ error: err }))
+    .catch(next);
+});
+
 module.exports = { router };
