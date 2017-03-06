@@ -10,7 +10,10 @@ const getIdFromVanity = vanity =>
     const url = `http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${STEAM_API_KEY}&vanityurl=${vanity}`;
     axios.get(url)
       .then((response) => {
-        if (response.data && response.data.steamid) resolve(response.data.steamid);
+        if (response &&
+            response.data &&
+            response.data.response &&
+            response.data.response.steamid) resolve(response.data.response.steamid);
         reject('Invalid Steam ID');
       })
       .catch((err) => {
@@ -120,10 +123,7 @@ module.exports = {
   profile: id =>
     new Promise((resolve, reject) => {
       getPlayerProfile(id)
-        .then((profile) => {
-          console.log('getPlayerProfile', profile);
-          resolve(profile);
-        })
+        .then(profile => resolve(profile))
         .catch(err => reject(err));
     }),
   score: id =>

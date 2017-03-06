@@ -11,7 +11,10 @@ chai.use(chaiAsPromised);
 
 describe('Steam functions', () => {
   it('checkid should validate a known good id', () =>
-    Steam.checkid('76561198007908897').should.eventually.to.equal('76561198007908897')
+    Steam.checkid('76561198007908897').should.eventually.equal('76561198007908897')
+  );
+  it('checkid should validate a known good vanity url', () =>
+    Steam.checkid('solitethos').should.eventually.equal('76561198007908897')
   );
   it('checkid should return null on a known bad id', () => {
     Steam.checkid('aaaa').should.eventually.be.null;
