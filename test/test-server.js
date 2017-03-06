@@ -22,9 +22,70 @@ describe('GET /checkid/:id', () => {
         res.body.steamid.should.equal('76561198007908897');
       })
   );
+
+  it('should should validate a known good vanity url', () =>
+    chai.request(app)
+      .get('/checkid/solitethos')
+      .then((res) => {
+        res.should.have.status(200);
+        res.body.steamid.should.equal('76561198007908897');
+      })
+  );
+
+  it('should should return empty on a known bad id', () =>
+    chai.request(app)
+      .get('/checkid/aaaa')
+      .then((res) => {
+        res.should.have.status(204);
+        res.body.should.eql({});
+      })
+  );
 });
 
-// Test Routes
+describe('GET /profile/:id', () => {
+  before(() => runServer());
+  after(() => closeServer());
 
-// GET checkid - check if no id is sent - does the route even fire?
-// maybe check that in postman
+  it('should return valid data for a known good id', () =>
+    chai.request(app)
+      .get('/profile/76561198007908897')
+      .then((res) => {
+        res.should.have.status(200);
+        res.body.profile.steamid.should.equal('76561198007908897');
+      })
+  );
+
+  it('should return status 500 for known bad id', () =>
+    chai.request(app)
+      .get('/profile/aaaa')
+      .then(() => {
+      })
+      .catch((res) => {
+        res.should.have.status(500);
+      })
+  );
+});
+
+describe('GET /score/:id', () => {
+  before(() => runServer());
+  after(() => closeServer());
+
+  it('should return valid score for a known good id', () =>
+    chai.request(app)
+      .get('/score/76561198007908897')
+      .then((res) => {
+        res.should.have.status(200);
+        res.body.score.should.be.a.number;
+      })
+  );
+
+  it('should return status 500 for known bad id', () =>
+    chai.request(app)
+      .get('/score/aaaa')
+      .then(() => {
+      })
+      .catch((res) => {
+        res.should.have.status(500);
+      })
+  );
+});

@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/checkid/:id', (req, res, next) => {
   Steam.checkid(req.params.id)
     .then(id => res.status(200).json({ steamid: id }))
-    .catch(err => res.status(500).json({ error: err }))
+    .catch(err => res.status(204).json({ error: err }))
     .catch(next);
 });
 

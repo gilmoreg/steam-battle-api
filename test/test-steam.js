@@ -10,6 +10,7 @@ const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 describe('Steam functions', () => {
+  // Checkid
   it('checkid should validate a known good id', () =>
     Steam.checkid('76561198007908897').should.eventually.equal('76561198007908897')
   );
@@ -19,6 +20,8 @@ describe('Steam functions', () => {
   it('checkid should return null on a known bad id', () => {
     Steam.checkid('aaaa').should.eventually.be.null;
   });
+
+  // Profile
   it('profile should return valid data for a known good id', () => {
     // Cannot test for specific values since they could change on Steam's side
     Steam.profile('76561198007908897')
@@ -27,6 +30,8 @@ describe('Steam functions', () => {
   it('profile should return null for known bad id', () => {
     Steam.profile('aaa').should.eventually.be.null;
   });
+
+  // Score
   it('score should return a number for a known good id', () => {
     Steam.score('76561198007908897').should.eventually.be.a('number');
   });
