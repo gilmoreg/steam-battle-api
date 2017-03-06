@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const axios = require('axios');
 const morgan = require('morgan');
 
 const { router } = require('./routes/');
@@ -18,7 +17,7 @@ app.use(morgan('common', { stream: logger.stream }));
 function runServer(port = process.env.PORT) {
   return new Promise((resolve, reject) => {
     server = app.listen(port, () => {
-      console.log(`Your app is listening on port ${port}`);
+      logger.log(`Your app is listening on port ${port}`);
       resolve();
     })
     .on('error', (err) => {
@@ -28,21 +27,17 @@ function runServer(port = process.env.PORT) {
 }
 
 function closeServer() {
-  return mongoose.disconnect().then(() => {
-     return new Promise((resolve, reject) => {
-       logger.log('Closing server');
-       server.close(err => {
-           if (err) {
-               return reject(err);
-           }
-           resolve();
-       });
-     });
+  return new Promise((resolve, reject) => {
+    logger.log('Closing server');
+    server.close((err) => {
+      if (err) reject(err);
+      resolve();
+    });
   });
 }
 
 if (require.main === module) {
-  runServer().catch(err => console.error(err));
+  runServer().catch(err => logger.error(err));
 }
 
-module.exports = {app, runServer, closeServer};
+module.exports = { app, runServer, closeServer };

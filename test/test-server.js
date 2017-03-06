@@ -1,32 +1,28 @@
-/*
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable comma-dangle */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const {app, runServer, closeServer} = require('../server');
-const {PORT, TEST_DATABASE_URL} = require('../config');
+const { app, runServer, closeServer } = require('../server');
+require('dotenv').config();
 
 const should = chai.should();
 chai.use(chaiHttp);
 
-describe('Server Status', function() {
+describe('GET /checkid/:id', () => {
+  before(() => runServer());
+  after(() => closeServer());
 
-    before(function() {
-        return runServer();
-    });
-
-    after(function() {
-        return closeServer();
-    });
-
-    it('should give a 200 status', function() {
-        return chai.request(app)
-        .get('/')
-        .then(function(res) {
-            res.should.have.status(200);
-        });
-    });
+  it('should should validate a known good id', () =>
+    chai.request(app)
+      .get('/checkid/76561198007908897')
+      .then((res) => {
+        res.should.have.status(200);
+        res.body.steamid.should.equal('76561198007908897');
+      })
+  );
 });
-*/
 
 // Test Routes
 
