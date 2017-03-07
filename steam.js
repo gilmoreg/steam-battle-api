@@ -14,11 +14,9 @@ const getIdFromVanity = vanity =>
             response.data &&
             response.data.response &&
             response.data.response.steamid) resolve(response.data.response.steamid);
-        reject('Invalid Steam ID');
+        reject(null);
       })
-      .catch((err) => {
-        reject(`Invalid Steam ID. ${err}`);
-      });
+      .catch(() => reject(null));
   });
 
 
@@ -31,7 +29,7 @@ const getSteamID = id =>
       // If SteamID threw an error, this might be a vanity URL
       getIdFromVanity(id)
         .then(sid => resolve(sid))
-        .catch(err => reject(`getSteamID ${error} ${err}`));
+        .catch(() => reject(null));
     }
   });
 
@@ -68,7 +66,7 @@ const getPlayerProfile = id =>
         resolve(player);
       } else reject('getPlayerProfile: Invalid response from API');
     })
-    .catch((error) => { reject(`getPlayerProfile error: ${error}`); });
+    .catch(() => reject(null));
   });
 
 const score = player =>
