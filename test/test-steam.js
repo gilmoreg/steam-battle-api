@@ -123,17 +123,6 @@ describe('Steam functions', () => {
 
   // Player
   it('player should return valid data for a known good id', (done) => {
-    const testProfile = {
-      steamid: 'test',
-      personaname: 'test',
-      profileurl: 'test',
-      avatarfull: 'test',
-    };
-    const testScore = {
-      appid: 1,
-      playtime_forever: 1,
-      playtime_2weeks: 1,
-    };
     moxios.stubRequest(/.*(GetOwnedGames).*/, {
       status: 200,
       responseText: JSON.stringify(fakeOwnedGames),
