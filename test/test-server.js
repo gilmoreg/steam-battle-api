@@ -9,7 +9,7 @@ require('dotenv').config();
 
 const should = chai.should();
 chai.use(chaiHttp);
-
+/* 
 describe('GET /checkid/:id', () => {
   before(() => runServer());
   after(() => closeServer());
@@ -69,3 +69,4 @@ describe('GET /player/:id', () => {
       })
   );
 });
+*/

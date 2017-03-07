@@ -8,8 +8,10 @@ const STEAM_API_KEY = process.env.STEAM_API_KEY;
 const getIdFromVanity = vanity =>
   new Promise((resolve, reject) => {
     const url = `http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${STEAM_API_KEY}&vanityurl=${vanity}`;
+    console.log('getIdFromVanity URL', url);
     axios.get(url)
       .then((response) => {
+        console.log('getIdFromVanity', JSON.stringify(response.data.response.steamid));
         if (response &&
             response.data &&
             response.data.response &&
@@ -22,6 +24,7 @@ const getIdFromVanity = vanity =>
 
 const getSteamID = id =>
   new Promise((resolve, reject) => {
+    console.log('getSteamID', id);
     try {
       const sid = new SteamID(id);
       resolve(sid.getSteamID64());
@@ -39,11 +42,12 @@ const getOwnedGames = id =>
     const url = `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${STEAM_API_KEY}&steamid=${id}&format=json`;
     axios(url)
       .then((response) => {
+        console.log('GetOwnedGames', JSON.stringify(response.data.response.games));
         if (response &&
             response.data &&
             response.data.response &&
             response.data.response.games) resolve(response.data.response.games);
-        else reject('getOwnedGames: Invalid response from API');
+        else reject(`getOwnedGames: Invalid response from API: ${JSON.stringify(response.data)} `);
       })
       .catch((err) => { reject(`getOwnedGames error: ${err}`); });
   });
