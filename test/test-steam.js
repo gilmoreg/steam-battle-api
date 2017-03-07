@@ -27,7 +27,7 @@ const fakeOwnedGames = {
         playtime_forever: 3472,
       },
     ] }
-  };
+};
 
 const fakeVanityGoodResponse = {
   response: {
@@ -40,6 +40,19 @@ const fakeVanityBadResponse = {
   response: {
     success: 42,
     message: 'No match',
+  }
+};
+
+const fakeProfileResponse = {
+  response: {
+    players: [
+      {
+        steamid: '0000',
+        personaname: 'test',
+        profileurl: 'test',
+        avatarfull: 'test',
+      }
+    ]
   }
 };
 
@@ -107,7 +120,7 @@ describe('Steam functions', () => {
       });
     });
   });
-/*
+
   // Player
   it('player should return valid data for a known good id', (done) => {
     const testProfile = {
@@ -121,19 +134,21 @@ describe('Steam functions', () => {
       playtime_forever: 1,
       playtime_2weeks: 1,
     };
-    const profileUrl = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${STEAM_API_KEY}&steamids=000`;
-    const scoreUrl = `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${STEAM_API_KEY}&steamid=000&format=json`;
-    sandbox.stub(axios, 'get')
-      .withArgs(profileUrl)
-        .resolves(testProfile)
-      .withArgs(scoreUrl)
-        .resolves(testScore);
-
-    Steam.player('000')
+    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+      status: 200,
+      responseText: JSON.stringify(fakeOwnedGames),
+    });
+    moxios.stubRequest(/.*(Summaries).*/, {
+      status: 200,
+      responseText: JSON.stringify(fakeProfileResponse),
+    });
+    Steam.player('0000')
       .then((player) => {
         console.log('player', player);
-        player.should.equal('76561198007908897');
+        player.should.have.keys(['profile', 'score']);
+        player.profile.should.have.keys(['steamid', 'personaname', 'profileurl', 'avatarfull']);
+        player.score.should.have.keys(['steamid', 'owned', 'playtime', 'recent', 'total']);
         done();
       });
-  }); */
+  });
 });
