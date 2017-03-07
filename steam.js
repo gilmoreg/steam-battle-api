@@ -118,18 +118,6 @@ module.exports = {
       })
       .catch(err => reject(err));
     }),
-  profile: id =>
-    new Promise((resolve, reject) => {
-      getPlayerProfile(id)
-        .then(profile => resolve(profile))
-        .catch(err => reject(err));
-    }),
-  score: id =>
-    new Promise((resolve, reject) => {
-      calculateScore(id)
-        .then(sc => resolve(sc))
-        .catch(err => reject(err));
-    }),
   player: id =>
     new Promise((resolve, reject) => {
       Promise.all([getPlayerProfile(id), calculateScore(id)])
