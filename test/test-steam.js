@@ -144,10 +144,14 @@ describe('Steam functions', () => {
     });
     Steam.player('0000')
       .then((player) => {
-        console.log('player', player);
         player.should.have.keys(['profile', 'score']);
         player.profile.should.have.keys(['steamid', 'personaname', 'profileurl', 'avatarfull']);
         player.score.should.have.keys(['steamid', 'owned', 'playtime', 'recent', 'total']);
+        done();
+      })
+      .catch((err) => {
+        console.log(err);
+        true.should.equal(false);
         done();
       });
   });
