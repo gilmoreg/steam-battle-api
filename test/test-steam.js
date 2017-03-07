@@ -2,9 +2,6 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable comma-dangle */
 const chai = require('chai');
-const sinon = require('sinon');
-require('sinon-as-promised');
-const axios = require('axios');
 const moxios = require('moxios');
 const Steam = require('../steam');
 

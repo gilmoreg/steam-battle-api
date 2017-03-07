@@ -3,6 +3,7 @@
 /* eslint-disable comma-dangle */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const moxios = require('moxios');
 
 const { app, runServer, closeServer } = require('../server');
 require('dotenv').config();
