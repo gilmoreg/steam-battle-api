@@ -29,8 +29,7 @@ describe('Steam functions', () => {
         done();
       })
       .catch((err) => {
-        console.log('err', err);
-        true.should.equal(false);
+        should.fail(err);
         done();
       });
     });
@@ -50,8 +49,7 @@ describe('Steam functions', () => {
         done();
       })
       .catch((err) => {
-        console.log('err', err);
-        true.should.equal(false);
+        should.fail(err);
         done();
       });
     });
@@ -66,7 +64,8 @@ describe('Steam functions', () => {
       responseText: JSON.stringify(fakes.vanityBadResponse),
     });
     moxios.wait(() => {
-      Steam.checkid('aaaa').then(() => {
+      Steam.checkid('aaaa').then((res) => {
+        should.fail(res);
         done();
       })
       .catch((err) => {
@@ -94,8 +93,7 @@ describe('Steam functions', () => {
         done();
       })
       .catch((err) => {
-        console.log(err);
-        true.should.equal(false);
+        should.fail(err);
         done();
       });
   });
