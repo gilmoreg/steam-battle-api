@@ -12,6 +12,11 @@ require('dotenv').config();
 const should = chai.should();
 chai.use(chaiHttp);
 
+process.on('unhandledRejection', (reason, p) => {
+  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+  // application specific logging, throwing an error, or other logic here
+});
+
 describe('GET /checkid/:id', () => {
   beforeEach(() => {
     runServer();
@@ -62,7 +67,7 @@ describe('GET /checkid/:id', () => {
       });
   });
 
-  it('should should return empty on a known bad id', (done) => {
+  it('should should return a 404 status and an error on a known bad id', (done) => {
     moxios.stubRequest(/.*(Vanity).*/, {
       status: 200,
       responseText: JSON.stringify(fakes.vanityBadResponse),
@@ -70,12 +75,12 @@ describe('GET /checkid/:id', () => {
     chai.request(app)
       .get('/checkid/00zaz000')
       .then((res) => {
-        res.should.have.status(204);
-        res.body.should.eql({});
+        should.fail(res);
         done();
       })
       .catch((err) => {
-        should.fail(err);
+        err.should.have.status(404);
+        err.response.body.error.should.exist;
         done();
       });
   });
@@ -117,13 +122,13 @@ describe('GET /player/:id', () => {
       });
   });
 
-  it('should return status 500 for known bad id', (done) => {
+  it('should return status 404 and an error for known bad id', (done) => {
     moxios.stubRequest(/.*(GetOwnedGames).*/, {
-      status: 500,
+      status: 204,
       responseText: JSON.stringify({}),
     });
     moxios.stubRequest(/.*(Summaries).*/, {
-      status: 500,
+      status: 204,
       responseText: JSON.stringify({}),
     });
     chai.request(app)
@@ -132,8 +137,9 @@ describe('GET /player/:id', () => {
         should.fail();
         done();
       })
-      .catch((res) => {
-        res.should.have.status(500);
+      .catch((err) => {
+        err.should.have.status(404);
+        err.response.body.error.should.exist;
         done();
       });
   });
