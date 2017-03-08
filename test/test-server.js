@@ -80,34 +80,61 @@ describe('GET /checkid/:id', () => {
       });
   });
 });
-/*
-describe('GET /player/:id', () => {
-  before(() => runServer());
-  after(() => closeServer());
 
-  it('should return valid player object for a known good id', (done) =>
+describe('GET /player/:id', () => {
+  beforeEach(() => {
+    runServer();
+    moxios.install();
+  });
+  afterEach(() => {
+    moxios.uninstall();
+    closeServer();
+  });
+
+  it('should return valid player object for a known good id', (done) => {
+    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+      status: 200,
+      responseText: JSON.stringify(fakes.ownedGames),
+    });
+    moxios.stubRequest(/.*(Summaries).*/, {
+      status: 200,
+      responseText: JSON.stringify(fakes.profileResponse),
+    });
     chai.request(app)
       .get('/player/76561198007908897')
       .then((res) => {
         res.should.have.status(200);
         res.body.player.should.exist;
         res.body.player.profile.should.exist;
-        res.body.player.profile.steamid.should.equal('76561198007908897');
+        res.body.player.profile.should.have.keys(['steamid', 'personaname', 'profileurl', 'avatarfull']);
         res.body.player.score.should.exist;
-        res.body.player.score.steamid.should.equal('76561198007908897');
+        res.body.player.score.should.have.keys(['steamid', 'owned', 'playtime', 'recent', 'total']);
+        done();
       })
-  );
+      .catch((err) => {
+        should.fail(err);
+        done();
+      });
+  });
 
-  it('should return status 500 for known bad id', (done) =>
+  it('should return status 500 for known bad id', (done) => {
+    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+      status: 500,
+      responseText: JSON.stringify({}),
+    });
+    moxios.stubRequest(/.*(Summaries).*/, {
+      status: 500,
+      responseText: JSON.stringify({}),
+    });
     chai.request(app)
-      .get('/player/aaaa')
+      .get('/player/00zaz000')
       .then(() => {
+        should.fail();
+        done();
       })
       .catch((res) => {
         res.should.have.status(500);
-      })
-  );
- 
+        done();
+      });
+  });
 });
-
- */
