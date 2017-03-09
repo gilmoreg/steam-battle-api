@@ -87,9 +87,10 @@ describe('Steam functions', () => {
     });
     Steam.player('0000')
       .then((player) => {
-        player.should.have.keys(['profile', 'score']);
-        player.profile.should.have.keys(['steamid', 'personaname', 'profileurl', 'avatarfull']);
-        player.score.should.have.keys(['steamid', 'owned', 'playtime', 'recent', 'total']);
+        player.id.should.equal('0000');
+        player.should.have.keys(['id', 'profile', 'score']);
+        player.profile.should.have.keys(['personaname', 'profileurl', 'avatarfull']);
+        player.score.should.have.keys(['owned', 'playtime', 'recent', 'total']);
         done();
       })
       .catch((err) => {

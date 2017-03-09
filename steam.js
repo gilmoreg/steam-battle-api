@@ -58,7 +58,6 @@ const getPlayerProfile = id =>
           response.data.response.players) {
         const p = response.data.response.players[0];
         const player = {
-          steamid: p.steamid,
           personaname: p.personaname,
           profileurl: p.profileurl,
           avatarfull: p.avatarfull,
@@ -78,7 +77,6 @@ const score = player =>
 
 const calculateScore = (id) => {
   const player = {
-    steamid: id,
     owned: 0,
     playtime: 0,
     recent: 0,
@@ -122,7 +120,7 @@ module.exports = {
     new Promise((resolve, reject) => {
       Promise.all([getPlayerProfile(id), calculateScore(id)])
         .then((player) => {
-          resolve({ profile: player[0], score: player[1] });
+          resolve({ id, profile: player[0], score: player[1] });
         })
         .catch(err => reject(err));
     }),

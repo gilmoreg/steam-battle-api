@@ -105,10 +105,9 @@ describe('GET /player/:id', () => {
       .then((res) => {
         res.should.have.status(200);
         res.body.player.should.exist;
-        res.body.player.profile.should.exist;
-        res.body.player.profile.should.have.keys(['steamid', 'personaname', 'profileurl', 'avatarfull']);
-        res.body.player.score.should.exist;
-        res.body.player.score.should.have.keys(['steamid', 'owned', 'playtime', 'recent', 'total']);
+        res.body.player.should.have.keys(['id', 'profile', 'score']);
+        res.body.player.profile.should.have.keys(['personaname', 'profileurl', 'avatarfull']);
+        res.body.player.score.should.have.keys(['owned', 'playtime', 'recent', 'total']);
         done();
       })
       .catch((err) => {

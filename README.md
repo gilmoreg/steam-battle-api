@@ -21,18 +21,17 @@ Given a valid 64-bit Steam ID, returns the following model:
 ```
 {
   player: {
+    id,		          // 64bit Steam ID
     profile: {
-      steamid,		// 64bit Steam ID
       personaname,	// Persona name
-      profileurl,	// URL for Steam profile
-      avatarfull	// URL for full size avatar image
+      profileurl,	  // URL for Steam profile
+      avatarfull	  // URL for full size avatar image
     },
     score: {
-      steamid,	// 64bit Steam ID
-      owned,	// number of games owned
-      playtime,	// number of total hours played
-      recent,	// number of hours played in the last two weeks
-      total		// a total score (owned + playtime + recent)
+      owned,	      // number of games owned
+      playtime,	    // number of total hours played
+      recent,	      // number of hours played in the last two weeks
+      total		      // a total score (owned + playtime + recent)
     }
   }
 }
