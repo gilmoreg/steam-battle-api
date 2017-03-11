@@ -57,6 +57,7 @@ const getPlayerProfile = id =>
           response.data.response &&
           response.data.response.players) {
         const p = response.data.response.players[0];
+        if (p.communityvisibilitystate !== 3) reject('getPlayerProfile: this profile is private.');
         const player = {
           personaname: p.personaname,
           profileurl: p.profileurl,
