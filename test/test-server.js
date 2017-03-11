@@ -23,15 +23,16 @@ describe('GET /checkid/:id', () => {
   });
 
   it('should should validate a known good id', (done) => {
-    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+    moxios.stubRequest(/.*(Summaries).*/, {
       status: 200,
-      responseText: JSON.stringify(fakes.ownedGames),
+      responseText: JSON.stringify(fakes.profileResponse),
     });
     chai.request(app)
       .get('/checkid/76561198007908897')
       .then((res) => {
         res.should.have.status(200);
-        res.body.steamid.should.equal('76561198007908897');
+        res.body.id.should.equal('76561198007908897');
+        res.body.profile.should.exist;
         done();
       })
       .catch((err) => {
@@ -41,19 +42,20 @@ describe('GET /checkid/:id', () => {
   });
 
   it('should should validate a known good vanity url', (done) => {
-    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+    moxios.stubRequest(/.*(Summaries).*/, {
       status: 200,
-      responseText: JSON.stringify(fakes.ownedGames),
+      responseText: JSON.stringify(fakes.profileResponse),
     });
     moxios.stubRequest(/.*(Vanity).*/, {
       status: 200,
       responseText: JSON.stringify(fakes.vanityGoodResponse),
     });
     chai.request(app)
-      .get('/checkid/solitethos')
+      .get('/checkid/aaaa')
       .then((res) => {
         res.should.have.status(200);
-        res.body.steamid.should.equal('76561198007908897');
+        res.body.id.should.equal('76561198007908897');
+        res.body.profile.should.exist;
         done();
       })
       .catch((err) => {
@@ -62,7 +64,11 @@ describe('GET /checkid/:id', () => {
       });
   });
 
-  it('should should return a 404 status and an error on a known bad id', (done) => {
+  it('should should return a 200 status and an error on a known bad id', (done) => {
+    moxios.stubRequest(/.*(Summaries).*/, {
+      status: 200,
+      responseText: JSON.stringify(fakes.profileResponse),
+    });
     moxios.stubRequest(/.*(Vanity).*/, {
       status: 200,
       responseText: JSON.stringify(fakes.vanityBadResponse),
@@ -70,12 +76,12 @@ describe('GET /checkid/:id', () => {
     chai.request(app)
       .get('/checkid/00zaz000')
       .then((res) => {
-        should.fail(res);
+        res.should.have.status(200);
+        res.body.error.should.exist;
         done();
       })
       .catch((err) => {
-        err.should.have.status(404);
-        err.response.body.error.should.exist;
+        should.fail(err);
         done();
       });
   });
@@ -110,13 +116,13 @@ describe('GET /player/:id', () => {
         res.body.player.score.should.have.keys(['owned', 'playtime', 'recent', 'total']);
         done();
       })
-      .catch((err) => {
-        should.fail(err);
+      .catch(() => {
+        should.fail();
         done();
       });
   });
 
-  it('should return status 404 and an error for known bad id', (done) => {
+  it('should return status 200 and an error for known bad id', (done) => {
     moxios.stubRequest(/.*(GetOwnedGames).*/, {
       status: 204,
       responseText: JSON.stringify({}),
@@ -127,13 +133,13 @@ describe('GET /player/:id', () => {
     });
     chai.request(app)
       .get('/player/00zaz000')
-      .then(() => {
-        should.fail();
+      .then((res) => {
+        res.should.have.status(200);
+        res.text.should.have.string('error');
         done();
       })
-      .catch((err) => {
-        err.should.have.status(404);
-        err.response.body.error.should.exist;
+      .catch(() => {
+        should.fail();
         done();
       });
   });

@@ -60,6 +60,7 @@ const getPlayerProfile = id =>
         const player = {
           personaname: p.personaname,
           profileurl: p.profileurl,
+          avatar: p.avatar,
           avatarfull: p.avatarfull,
         };
         resolve(player);
@@ -108,8 +109,8 @@ module.exports = {
   checkid: id =>
     new Promise((resolve, reject) => {
       getSteamID(id).then((sid) => {
-        getOwnedGames(sid).then((games) => {
-          if (games) resolve(sid);
+        getPlayerProfile(sid).then((profile) => {
+          if (profile) resolve({ id: sid, profile });
           reject(null);
         })
         .catch(err => reject(err));

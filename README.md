@@ -11,7 +11,13 @@ Verifies the existence of a valid Steam ID. Accepts any of the [three valid Stea
 Given a valid Steam ID (as defined above), returns the following model:
 ```
 {
-  steamid // 64bit Steam ID
+  id,             // 64bit Steam ID
+  profile: {
+    avatar,    	  // URL for avatar image
+    avatarfull,	  // URL for full size avatar image
+    personaname,	// Persona name
+    profileurl,	  // URL for Steam profile
+  }
 }
 ```
 
@@ -23,9 +29,10 @@ Given a valid 64-bit Steam ID, returns the following model:
   player: {
     id,		          // 64bit Steam ID
     profile: {
+      avatar,    	  // URL for avatar image
+      avatarfull,	  // URL for full size avatar image
       personaname,	// Persona name
       profileurl,	  // URL for Steam profile
-      avatarfull	  // URL for full size avatar image
     },
     score: {
       owned,	      // number of games owned

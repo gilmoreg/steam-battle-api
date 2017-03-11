@@ -19,13 +19,14 @@ describe('Steam functions', () => {
   it('checkid should validate a known good id', (done) => {
     // Checkid makes up to two API calls (one to resolve a vanity URL if necessary
     // and one to check if the user owns any games)
-    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+    moxios.stubRequest(/.*(Summaries).*/, {
       status: 200,
-      responseText: JSON.stringify(fakes.ownedGames),
+      responseText: JSON.stringify(fakes.profileResponse),
     });
     moxios.wait(() => {
       Steam.checkid('76561198007908897').then((response) => {
-        response.should.equal('76561198007908897');
+        response.id.should.equal('76561198007908897');
+        response.profile.should.have.keys(['avatar', 'avatarfull', 'personaname', 'profileurl']);
         done();
       })
       .catch((err) => {
@@ -35,9 +36,9 @@ describe('Steam functions', () => {
     });
   });
   it('checkid should validate a known good vanity url', (done) => {
-    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+    moxios.stubRequest(/.*(Summaries).*/, {
       status: 200,
-      responseText: JSON.stringify(fakes.ownedGames),
+      responseText: JSON.stringify(fakes.profileResponse),
     });
     moxios.stubRequest(/.*(Vanity).*/, {
       status: 200,
@@ -45,7 +46,8 @@ describe('Steam functions', () => {
     });
     moxios.wait(() => {
       Steam.checkid('solitethos').then((response) => {
-        response.should.equal('76561198007908897');
+        response.id.should.equal('76561198007908897');
+        response.profile.should.have.keys(['avatar', 'avatarfull', 'personaname', 'profileurl']);
         done();
       })
       .catch((err) => {
@@ -55,9 +57,9 @@ describe('Steam functions', () => {
     });
   });
   it('checkid should return null on a known bad id', (done) => {
-    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+    moxios.stubRequest(/.*(Summaries).*/, {
       status: 200,
-      responseText: JSON.stringify(fakes.ownedGames),
+      responseText: JSON.stringify(fakes.profileResponse),
     });
     moxios.stubRequest(/.*(Vanity).*/, {
       status: 200,
@@ -89,7 +91,7 @@ describe('Steam functions', () => {
       .then((player) => {
         player.id.should.equal('0000');
         player.should.have.keys(['id', 'profile', 'score']);
-        player.profile.should.have.keys(['personaname', 'profileurl', 'avatarfull']);
+        player.profile.should.have.keys(['avatar', 'personaname', 'profileurl', 'avatarfull']);
         player.score.should.have.keys(['owned', 'playtime', 'recent', 'total']);
         done();
       })
