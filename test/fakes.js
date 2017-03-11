@@ -34,6 +34,7 @@ module.exports = {
           personaname: 'test',
           profileurl: 'test',
           avatarfull: 'test',
+          communityvisibilitystate: 3,
         },
       ],
     },
