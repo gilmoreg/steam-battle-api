@@ -27,6 +27,10 @@ describe('GET /checkid/:id', () => {
       status: 200,
       responseText: JSON.stringify(fakes.profileResponse),
     });
+    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+      status: 200,
+      responseText: JSON.stringify(fakes.ownedGames),
+    });
     chai.request(app)
       .get('/checkid/76561198007908897')
       .then((res) => {
@@ -36,7 +40,8 @@ describe('GET /checkid/:id', () => {
         done();
       })
       .catch((err) => {
-        should.fail(err);
+        console.error(err);
+        should.fail();
         done();
       });
   });
@@ -50,6 +55,10 @@ describe('GET /checkid/:id', () => {
       status: 200,
       responseText: JSON.stringify(fakes.vanityGoodResponse),
     });
+    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+      status: 200,
+      responseText: JSON.stringify(fakes.ownedGames),
+    });
     chai.request(app)
       .get('/checkid/aaaa')
       .then((res) => {
@@ -59,7 +68,8 @@ describe('GET /checkid/:id', () => {
         done();
       })
       .catch((err) => {
-        should.fail(err);
+        console.error(err);
+        should.fail();
         done();
       });
   });
@@ -73,6 +83,10 @@ describe('GET /checkid/:id', () => {
       status: 200,
       responseText: JSON.stringify(fakes.vanityBadResponse),
     });
+    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+      status: 200,
+      responseText: JSON.stringify(fakes.ownedGames),
+    });
     chai.request(app)
       .get('/checkid/00zaz000')
       .then((res) => {
@@ -81,7 +95,8 @@ describe('GET /checkid/:id', () => {
         done();
       })
       .catch((err) => {
-        should.fail(err);
+        console.error(err);
+        should.fail();
         done();
       });
   });
@@ -116,7 +131,8 @@ describe('GET /player/:id', () => {
         res.body.player.score.should.have.keys(['owned', 'playtime', 'recent', 'total']);
         done();
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error(err);
         should.fail();
         done();
       });
@@ -138,7 +154,8 @@ describe('GET /player/:id', () => {
         res.text.should.have.string('error');
         done();
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error(err);
         should.fail();
         done();
       });

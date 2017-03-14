@@ -111,8 +111,11 @@ module.exports = {
     new Promise((resolve, reject) => {
       getSteamID(id).then((sid) => {
         getPlayerProfile(sid).then((profile) => {
-          if (profile) resolve({ id: sid, profile });
-          reject(null);
+          getOwnedGames(sid)
+            .then((games) => {
+              if (games && games.length > 0) resolve({ id: sid, profile });
+              else reject(null);
+            });
         })
         .catch(err => reject(err));
       })

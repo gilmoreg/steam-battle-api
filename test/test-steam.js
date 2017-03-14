@@ -23,6 +23,10 @@ describe('Steam functions', () => {
       status: 200,
       responseText: JSON.stringify(fakes.profileResponse),
     });
+    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+      status: 200,
+      responseText: JSON.stringify(fakes.ownedGames),
+    });
     moxios.wait(() => {
       Steam.checkid('76561198007908897').then((response) => {
         response.id.should.equal('76561198007908897');
@@ -30,7 +34,8 @@ describe('Steam functions', () => {
         done();
       })
       .catch((err) => {
-        should.fail(err);
+        console.log(err);
+        should.fail();
         done();
       });
     });
@@ -44,6 +49,10 @@ describe('Steam functions', () => {
       status: 200,
       responseText: JSON.stringify(fakes.vanityGoodResponse),
     });
+    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+      status: 200,
+      responseText: JSON.stringify(fakes.ownedGames),
+    });
     moxios.wait(() => {
       Steam.checkid('solitethos').then((response) => {
         response.id.should.equal('76561198007908897');
@@ -51,7 +60,8 @@ describe('Steam functions', () => {
         done();
       })
       .catch((err) => {
-        should.fail(err);
+        console.log(err);
+        should.fail();
         done();
       });
     });
@@ -65,8 +75,13 @@ describe('Steam functions', () => {
       status: 200,
       responseText: JSON.stringify(fakes.vanityBadResponse),
     });
+    moxios.stubRequest(/.*(GetOwnedGames).*/, {
+      status: 200,
+      responseText: JSON.stringify(fakes.ownedGames),
+    });
     moxios.wait(() => {
       Steam.checkid('aaaa').then((res) => {
+        console.log(res);
         should.fail(res);
         done();
       })
@@ -96,6 +111,7 @@ describe('Steam functions', () => {
         done();
       })
       .catch((err) => {
+        console.log(err);
         should.fail(err);
         done();
       });
