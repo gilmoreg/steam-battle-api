@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/gilmoreg/steam-battle-api#readme",
   "dependencies": {
-    "axios": "^0.15.3",
+    "axios": "^0.21.1",
     "cors": "^2.8.1",
     "dotenv": "^4.0.0",
     "express": "^4.15.0",
